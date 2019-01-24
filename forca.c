@@ -40,8 +40,52 @@ int jaChutou(char letra)
     return 0;
 }
 
+int chutesErrados()
+{
+    int erros = 0;
+    for (int i = 0; i < chutesDados; i++)
+    {
+        int existe = 0;
+
+        for (int j = 0; j < strlen(palavraSecreta); j++)
+        {
+            if (chutes[i] == palavraSecreta[j])
+            {
+                existe = 1;
+                break;
+            }
+        }
+
+        if (!existe)
+            erros++;
+    }
+
+    return erros;
+}
+
 void desenhaForca()
 {
+    int erros = chutesErrados();
+
+    printf("  _______      \n");
+    printf(" |/      |     \n");
+    printf(" |      %c%c%c    \n",
+           erros >= 1 ? '(' : ' ',
+           erros >= 1 ? '_' : ' ',
+           erros >= 1 ? ')' : ' ');
+    printf(" |      %c%c%c   \n",
+           erros >= 3 ? '\\' : ' ',
+           erros >= 2 ? '|' : ' ',
+           erros >= 4 ? '/' : ' ');
+    printf(" |       %c     \n",
+           erros >= 2 ? '|' : ' ');
+    printf(" |      %c %c   \n",
+           erros >= 5 ? '/' : ' ',
+           erros >= 6 ? '\\' : ' ');
+    printf(" |             \n");
+    printf("_|___          \n");
+    printf("\n\n");
+
     for (int i = 0; i < strlen(palavraSecreta); i++)
     {
         if (jaChutou(palavraSecreta[i]))
@@ -122,6 +166,8 @@ int acertou()
         if (!jaChutou(palavraSecreta[i]))
             return 0;
     }
+    desenhaForca();
+
     printf("Parabéns!!! Você Ganhou!!!\n");
     printf("             ___________   \n");
     printf("            '._==_==_=_.'  \n");
@@ -138,25 +184,8 @@ int acertou()
 
 int enforcou()
 {
-    int erros = 0;
-    for (int i = 0; i < chutesDados; i++)
-    {
-        int existe = 0;
 
-        for (int j = 0; j < strlen(palavraSecreta); j++)
-        {
-            if (chutes[i] == palavraSecreta[j])
-            {
-                existe = 1;
-                break;
-            }
-        }
-
-        if (!existe)
-            erros++;
-    }
-
-    if (erros >= 5)
+    if (chutesErrados() >= 7)
     {
         printf("Você Perdeu!!!\n");
         printf("            _,.-------.,_                        \n");
@@ -183,7 +212,7 @@ int enforcou()
         printf("            \\.    ^    ./                        \n");
         printf("              ^~~~^~~~^                          \n");
     }
-    return erros >= 5;
+    return chutesErrados() >= 7;
 }
 
 int main()
@@ -198,7 +227,7 @@ int main()
         desenhaForca();
         chuta();
     }
-    desenhaForca();
+    // desenhaForca();
 
     adicionaPalavra();
 }
